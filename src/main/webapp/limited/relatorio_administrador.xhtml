@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<ui:composition template="/limited/template/menu.xhtml">
+		
+		<ui:define name="conteudo">
+		
+			<h1>Administradores</h1>
+			
+			<hr/>
+			
+			<h:form id="tabela">
+				
+				<div class="message">
+					<p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+				</div>
+				
+				<p:dataTable class="data_table label" widgetVar="tabela_administradores" var="administrador" 
+					value="#{administradorBean.lista}" resizableColumns="true" draggableColumns="true"
+					rowKey="#{administrador.id}" selection="#{administradorBean.administrador}" 
+					selectionMode="single" rowIndexVar="rowIndex" scrollRows="20" scrollable="true" 
+					liveScroll="true" scrollHeight="350" emptyMessage="Nenhum resultado encontrado" 
+					filteredValue="#{administradorBean.lista}">
+				
+					<p:ajax event="rowSelect" oncomplete="PF('dialog_descricao').show();" update="descricao" />
+					
+					<f:facet name="header"> 
+			            <p:outputPanel>
+			                <h:outputText value="Buscar Por" />
+			                <p:inputText id="globalFilter" onkeyup="PF('tabela_administradores').filter()"/>
+			            </p:outputPanel>
+			        </f:facet>
+				   				   
+				    <p:column headerText="Nome" sortBy="#{administrador.nome}" filterBy="#{administrador.nome}" 
+				    	filterMatchMode="contains" filterStyle="display:none" priority="3">
+				        <h:outputText value="#{administrador.nome}" />
+				    </p:column> 
+
+				 	<p:column headerText="E-mail" sortBy="#{administrador.email}" filterBy="#{administrador.email}" 
+				 		filterMatchMode="contains" filterStyle="display:none" priority="1">
+				        <h:outputText value="#{administrador.email}" />
+				    </p:column>
+
+				    <p:column headerText="Ações" priority="2">	        
+
+					    <p:commandLink id="link_editar" action="/limited/cadastro_administrador" ajax="false">
+					        <h:graphicImage library="images" name="tabelas/edit.png"/>	    
+					        <f:param name="identificador" value="#{administrador.id}"/> 
+ 					    </p:commandLink> 
+					    
+					    <p:commandLink id="link_excluir" oncomplete="PF('dialog_exclusao').show();" ajax="true"> 
+ 					        <h:graphicImage library="images" name="tabelas/delete.png"/> 
+ 					        <f:setPropertyActionListener target="#{administradorBean.administrador}" value="#{administrador}"/> 					     
+ 					    </p:commandLink>
+ 					    
+				    </p:column>
+				    
+				</p:dataTable>
+				
+			</h:form>
+
+			<p:dialog class="modal" widgetVar="dialog_exclusao" modal="true">
+		        <p:outputPanel>
+		         
+		        	<div class="contents_model">		   
+		        		<label>
+		        			A exclusão deste dado impossibilitara sua recuperação posteriormente. 
+		        			Deseja realmente continuar? 
+		        		</label>
+		        	</div>
+		        	
+		        	<div class="button_modal">
+		        		<h:form>
+		        		
+				        	<p:commandButton class="btn-default" value="Continuar" 
+				        		action="#{administradorBean.excluir}" ajax="true" update="tabela" 
+				        		oncomplete="PF('dialog_exclusao').hide();" />				     		
+					       
+				        	<p:commandButton class="btn-primary" value="Cancelar" 
+				        		oncomplete="PF('dialog_exclusao').hide();" /> 
+		        		
+		        		</h:form>
+		        	</div>
+		        				        	
+		        </p:outputPanel>
+		  	</p:dialog>
+	
+			<h:form id="descricao">
+				
+				<p:dialog class="modal" widgetVar="dialog_descricao" modal="true">
+			        <p:outputPanel>
+			        			  
+			        	<p:panelGrid class="text_align_left"  columns="1" layout="grid"> 
+			        	
+			        		<h5>Dados do administrador</h5>
+							
+							<hr/>
+							
+							<p:outputLabel value="Nome"/>
+							<p:inputText class="input_text"
+								value="#{administradorBean.administrador.nome}" 
+								readonly="true">
+							</p:inputText>
+	
+							<p:outputLabel value="E-mail"/>
+							<p:inputText class="input_text"
+								value="#{administradorBean.administrador.email}" 
+								readonly="true">
+							</p:inputText>
+							
+
+						</p:panelGrid>
+						
+						<div class="button_modal">
+		 
+				        	<p:commandButton class="btn-primary" value="Ok" 
+				        		oncomplete="PF('dialog_descricao').hide();" /> 
+		        		
+		        		</div>
+								           
+			        </p:outputPanel>
+			        
+			    </p:dialog>
+			
+			</h:form>
+			
+		</ui:define>
+		
+	</ui:composition>
+
+</html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<title>
+			<ui:insert name="titulo">
+				Questionário Web
+			</ui:insert>
+		</title>
+		<h:outputStylesheet library="css" name="estilo.css"></h:outputStylesheet>
+	</h:head>
+	<h:body>
+		<div class="container">
+			<div class="box_top">
+				<div class="title_top">
+					<ui:insert name="titulo">Questionário Web</ui:insert>
+				</div>
+				<div class="icon_home">
+					<h:form>
+						<p:commandLink id="link_home" action="/limited/cadastro_administrador" ajax="false">
+							<h:graphicImage library="images" name="home.png"/>
+						</p:commandLink>
+					</h:form>
+				</div>
+			</div>			
+			<div class="menu">		
+				<h:form>
+		    		<p:growl autoUpdate="true"/>
+				    <p:panelMenu>
+				        <p:submenu label="Cadastros">
+				            <p:menuitem value="Administrador" outcome="/limited/cadastro_administrador"/>
+				            <p:menuitem value="Questionario" outcome="/limited/cadastro_questionario"/>	
+				            <p:menuitem value="Perguntas" outcome="/limited/cadastro_perguntas"/>				          
+				        </p:submenu>
+				        <p:submenu label="Relatórios">
+				        	<p:menuitem value="Administradores" outcome="/limited/relatorio_administrador"/>
+				        </p:submenu>			        		       
+					</p:panelMenu>
+				</h:form>				
+			</div>		
+			<div class="contents">
+				<ui:insert name="conteudo"></ui:insert>
+			</div>	
+		</div>
+	</h:body>
+</html>

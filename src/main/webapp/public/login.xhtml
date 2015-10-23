@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+	<h:head>
+		<title>Questionário web</title>
+		<h:outputStylesheet library="css" name="estilo.css"></h:outputStylesheet>
+	</h:head>
+	<h:body>
+
+		<h1>Questionário web SoftBox</h1>
+			
+		<hr/>
+
+		<form class="little_box_form" id="login" method="post" action="${request.contextPath}/j_spring_security_check">
+	
+			<h:panelGroup rendered="#{!empty param.login_error}">
+				<div class="error_login">
+					<span style="font-color:red"> Erro ao efetuar o login.</span><br />
+				</div>
+			</h:panelGroup>					
+			
+			<div class="div_input">
+				<label>E-mail</label>
+				<input class="wide_input_text" type='text' name='j_username'/>
+			</div>
+			
+			<div class="div_input">
+				<label>Senha</label>
+				<input class="wide_input_text" type="password" name='j_password'/>
+			</div>
+			
+			<div class="div_input">				
+				<label> <input type="checkbox" name="_spring_security_remember_me"/> Entrar automaticamente</label>
+			</div>
+			
+			<div class="div_input">
+				<input class="btn-primary" type="submit" value="Entrar"/>
+			</div>
+
+		</form>	
+		
+		<script>
+			document.getElementById("login").j_username.value = "#{SPRING_SECURITY_LAST_USERNAME}";
+		</script>
+	
+	</h:body>
+</html>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<ui:composition template="/limited/template/menu.xhtml">
+		
+		<ui:define name="conteudo">
+			
+			<h1>Cadastro de administrador</h1>
+			
+			<hr/>
+			
+			<div class="form">
+				
+				<p:messages id="messages" showDetail="false" autoUpdate="false" closable="true" />
+		
+				<h:form>
+				
+					<h:inputHidden value="#{administradorBean.administrador.id}"/>
+
+					<p:panelGrid columns="1" layout="grid">
+						
+						<h5>Dados pessoais</h5>
+						
+						<hr/>
+						
+						<p:outputLabel value="Nome" for="nome"/>
+						<p:inputText class="input_text" id="nome"
+							value="#{administradorBean.administrador.nome}" required="true"
+							requiredMessage="Informe o nome" 
+							maxlength="90">
+						</p:inputText>
+
+					    <p:outputLabel value="E-mail" for="email"/>
+						<p:inputText class="input_text" id="email" value="#{administradorBean.administrador.email}"
+							required="true" validatorMessage="E-mail inválido"
+							requiredMessage="Informe o e-mail.">
+							<f:validateRegex
+								pattern="[a-zA-z0-9\-\_\.]+@[a-zA-z0-9\-\_\.]+">
+							</f:validateRegex>
+						</p:inputText>
+
+						<h5>Dados acesso ao sistema</h5>
+						
+						<hr/>
+
+						<p:outputLabel value="Senha" for="senha"/>
+				        <p:password 
+				        	class="input_text" 
+				        	id="senha" 
+				        	value="#{administradorBean.administrador.senha}" 
+				        	redisplay="true"
+				        	requiredMessage="Informe a senha."
+				        	match="confirmacaoSenha" 			
+				        	maxlength="90" 
+				        	required="true"
+				        	feedback="true"   
+							promptLabel="Digite a senha" 
+							weakLabel="Força da senha : Fraca"   
+							goodLabel="Força da senha : Média" 
+							strongLabel="Força da senha : Forte"  
+							validatorMessage="As duas senhas devem ser iguais"/>
+				 
+				        <p:outputLabel value="Confirmar Senha" for="senha"/>
+				        <p:password 
+				        	class="input_text" 
+				        	id="confirmacaoSenha" 
+				        	value="#{administradorBean.confirmacaoSenha}"
+				        	redisplay="true" 				       
+				        	maxlength="90"/>
+
+				        <p:commandButton class="btn-primary" value="Salvar" 
+				        	action="#{administradorBean.atualizarOuSalvar}" ajax="false" />					         
+
+					</p:panelGrid>
+				
+				</h:form>
+			
+			</div>
+		
+		</ui:define>
+		
+	</ui:composition>
+</html>

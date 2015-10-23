@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<ui:composition template="/limited/template/menu.xhtml">
+		
+		<ui:define name="conteudo">
+			
+			<h1>Cadastro de perguntas</h1>
+			
+			<hr/>
+			
+			<div class="wide_form">
+
+				<h:form id="div_questoes">
+				
+					<p:messages id="messages" showDetail="false" autoUpdate="false" closable="true" />
+
+					<p:panelGrid columns="1" layout="grid">
+					
+						<p:outputLabel value="Questionário"/>
+						<p:selectOneMenu id="questionario" value="#{perguntaBean.questionario}"
+			               filter="true" filterMatchMode="startsWith">
+				            
+				            <f:selectItem itemLabel="Selecione um questiónario" itemValue="" />
+				            
+				            <f:selectItems value="#{perguntaBean.questionarios}" 
+				            	var="questionario" 
+				            	itemLabel="#{questionario.nome}" 
+				            	itemValue="#{questionario}">
+				            </f:selectItems>
+			
+				            <p:column>
+				                <h:outputText value="#{questionario.nome}" />
+				            </p:column>
+				            
+				            <p:ajax event="change" listener="#{perguntaBean.carregarPerguntas}" update="list_perguntas"/>
+				            
+				        </p:selectOneMenu>
+				  
+				  	</p:panelGrid>
+				        
+				  	<h:panelGrid class="panel_grid_internal" id="list_perguntas"> 
+				        
+		          		<p:dataList class="list_box" value="#{perguntaBean.perguntas}" var="pergunta" 
+		          			rendered="#{perguntaBean.questionario != null}" 
+		         		 	type="ordered" emptyMessage="Nenhuma pergunta cadastrada">
+		         		 	<p:commandLink update="div_questoes" action="#{perguntaBean.removerPergunta}" ajax="true">
+					        	<h:graphicImage library="images" name="tabelas/delete.png"/>
+					        	<f:setPropertyActionListener target="#{perguntaBean.pergunta}" value="#{pergunta}"/>
+					        </p:commandLink>#{pergunta.pergunta}
+
+						        <p:dataList class="list_internal" value="#{perguntaBean.opcoes}" var="opcao" 
+			          			rendered="#{perguntaBean.atualizarRenderezacaoListOpcoes(pergunta)}" 
+			         		 	type="ordered" emptyMessage="Nenhuma opção cadastrada">				
+						        <p:commandLink update="div_questoes" action="#{perguntaBean.removerOpcao}" ajax="true">
+						        	<h:graphicImage library="images" name="tabelas/delete.png"/>
+						        	<f:setPropertyActionListener target="#{perguntaBean.opcao}" value="#{opcao}"/>
+						        </p:commandLink>#{opcao.descricao}
+
+			    				</p:dataList>
+					        
+			    		</p:dataList>
+			    		
+			    		<hr/>
+	
+				        <p:commandButton class="btn-primary" value="Nova Pergunta" rendered="#{perguntaBean.questionario != null}"
+				        	oncomplete="PF('dialog_nova_pergunta').show();" update="model_nova_pergunta" />	
+						    			
+				 	</h:panelGrid>       	
+				 					    
+				</h:form>
+			
+			</div>
+	
+			<p:dialog id="model_nova_pergunta" class="big_modal" widgetVar="dialog_nova_pergunta" modal="true">			        
+				<p:outputPanel>
+				        
+				 	<h:form>
+				        
+				    	<p:panelGrid class="text_align_left" columns="1" layout="grid">
+								
+							<p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+							      					      
+			        		<h5>Dados pergunta</h5>
+							
+							<hr/>
+
+							<p:outputLabel value="Pergunta" for="pergunta"/>
+							<p:inputTextarea class="input_text_area" id="pergunta" 
+								value="#{perguntaBean.pergunta.pergunta}" required="true" 
+								rows="7" cols="30" counter="display" maxlength="255" 
+								counterTemplate="{0} caracteres restantes." 
+								requiredMessage="Informe a pergunta" autoResize="false" />
+	    					<h:outputText id="display" class="description" />
+	    					
+	    					<p:outputLabel value="Tipo"/>
+					        <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+					        	<p:selectOneRadio id="tipo" value="#{perguntaBean.pergunta.tipo}"  layout="grid" columns="1">
+						            <f:selectItem  itemLabel="Discursiva" itemValue="discursiva"/>
+						            <f:selectItem itemLabel="Objetiva" itemValue="objetiva" />
+						            							            
+			            			<p:ajax event="change" listener="#{perguntaBean.atualizarRenderezacaoListOpcoes}" update="link_opcoes"/>
+			            	            
+						        </p:selectOneRadio>
+						    </h:panelGrid>
+		
+						</p:panelGrid>
+						
+						<div class="button_modal">
+
+					    	<p:commandButton class="btn-primary" value="Salvar" 
+				        		actionListener="#{perguntaBean.validarDadosPergunta}" update="div_questoes"
+				        		oncomplete="handleRequest(xhr, status, args)" />				     		
+				       
+				        	<p:commandButton class="btn-default" value="Cancelar" 
+				        		oncomplete="PF('dialog_nova_pergunta').hide();" />
+   
+					    </div>
+					</h:form>
+					
+					<p:panel class="panel_center">
+						<h:form id="link_opcoes">
+			        		<p:commandButton  class="btn-default" value="Adicionar opções" 
+			        		oncomplete="PF('dialog_nova_pergunta').hide(); PF('dialog_nova_opcao').show();" 
+			        		rendered="#{perguntaBean.renderizarListOpcoes}" update="model_opcoes"/>
+			        	</h:form>
+		        	</p:panel>
+	
+				</p:outputPanel>			        
+			</p:dialog>
+			
+			<script type="text/javascript">
+				    
+		    	function handleRequest(xhr, status, args) {
+			        
+			    	if(args.validationFailed || !args.erro) 				            
+			    		PF('dialog_nova_pergunta').jq.effect("shake", {times:5}, 100);
+			        				       
+			    	else 				           
+			    		PF('dialog_nova_pergunta').hide();				           				        
+			    }
+
+			</script>
+			
+			
+			
+			
+			<p:dialog id="model_opcoes" class="big_modal" widgetVar="dialog_nova_opcao" modal="true">
+				<p:outputPanel>
+	
+					<h:form id="list_opcoes">
+						<p:panelGrid class="text_align_left" columns="1" layout="grid">
+						
+							<p:messages id="messages" showDetail="false" autoUpdate="true" closable="true" />
+								
+							<h5>Dados opções</h5>
+							
+							<hr/>
+	
+							<p:dataList class="list_box" value="#{perguntaBean.listaOpcoes}" var="opcao" 				          			 
+			         		 	type="ordered" emptyMessage="Nenhuma opção adicionada">		         					
+					        	<p:commandLink update="list_opcoes" action="#{perguntaBean.removerOpcaoLista}" ajax="true">
+						        	<h:graphicImage library="images" name="tabelas/delete.png"/>
+						        	 <f:setPropertyActionListener target="#{perguntaBean.opcao}" value="#{opcao}"/>
+						        </p:commandLink>
+						        #{opcao.descricao}
+					        </p:dataList>
+		
+					    </p:panelGrid>
+				    </h:form>
+				    
+				    <h:form id="descricao_opcao">
+						<p:panelGrid class="text_align_left" columns="1" layout="grid">
+
+							<p:outputLabel value="Descrição da opção" for="opcao"/>
+							<p:inputTextarea class="input_text_area" id="opcao" 
+							value="#{perguntaBean.opcao.descricao}" required="true" 
+								rows="7" cols="30" counter="display2" maxlength="255" 
+								counterTemplate="{0} caracteres restantes." 
+								requiredMessage="Informe a descrição da opção" autoResize="false" />
+	    					<h:outputText id="display2" class="description" />
+					
+						</p:panelGrid>
+						
+						<p:panel class="panel_center">
+							<p:commandButton class="btn-primary" value="Adicionar" 
+					        		action="#{perguntaBean.adicionarOpcao}" update="list_opcoes descricao_opcao"/>
+						</p:panel>
+						
+					</h:form>
+					
+					<div class="button_modal">
+												
+						<h:form>
+					
+				    	<p:commandButton class="btn-primary" value="Finalizar" 
+			        		oncomplete="PF('dialog_nova_opcao').hide(); PF('dialog_nova_pergunta').show();"/>
+			        		
+			        	</h:form>
+			        					        					     							
+			    	</div>
+				    
+				</p:outputPanel>
+			</p:dialog>
+
+		</ui:define>
+		
+	</ui:composition>
+</html>

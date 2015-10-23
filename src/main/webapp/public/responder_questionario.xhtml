@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+		<title>
+			<ui:insert name="titulo">
+				Questionário Web
+			</ui:insert>
+		</title>
+		<h:outputStylesheet library="css" name="estilo.css"></h:outputStylesheet>
+	</h:head>
+	<h:body>
+	
+		<p:panel rendered="#{renderizadorBean.renderizarTela1}">
+
+			<h1>Questionário Web</h1>
+				
+			<hr/>
+	
+			<h:form class="little_box_form">
+			
+				<p:messages id="messages" showDetail="false" autoUpdate="false" closable="true" />
+			
+				<p:outputLabel value="Entre com seu e-mail" for="email"/>
+				<p:inputText class="wide_input_text" id="email" value="#{renderizadorBean.usuario.email}"
+					required="true" validatorMessage="E-mail inválido"
+					requiredMessage="Informe o e-mail.">
+					<f:validateRegex
+						pattern="[a-zA-z0-9\-\_\.]+@[a-zA-z0-9\-\_\.]+">
+					</f:validateRegex>
+				</p:inputText>
+				
+				<div class="div_input">
+				
+					<p:commandButton class="btn-primary" value="Enviar" 
+						action="#{renderizadorBean.validarUsuario}" ajax="true" update="@all" />
+				
+				</div>
+				
+			</h:form>
+		
+		</p:panel>
+		
+		<p:panel rendered="#{renderizadorBean.renderizarTela2}">
+			
+			<h1>Questionáros</h1>
+			
+			<hr/>
+			
+			<h:form class="box_form">
+			
+				<p:dataList class="list_box" value="#{renderizadorBean.questionarios}" var="questionario"       			
+	        		type="ordered" emptyMessage="Nenhum questionário disponível">
+	        		<p:commandLink id="link_editar" action="#{renderizadorBean.validarQuestionario}" update="@all" ajax="false">
+			        	<h:graphicImage library="images" name="tabelas/edit.png"/>	    
+			        	<f:setPropertyActionListener target="#{renderizadorBean.questionario}" value="#{questionario}"/>
+			        	#{questionario.nome}
+				    </p:commandLink> 
+	        		
+				</p:dataList>
+	
+			</h:form>
+			
+		</p:panel>
+		
+		<p:panel rendered="#{renderizadorBean.renderizarTela3}">
+		
+			<h1>Perguntas</h1>
+			
+			<hr/>
+			
+			<h:form class="box_form">
+	
+				<p:dataList class="list_box" value="#{renderizadorBean.perguntas}" var="pergunta"       			
+	        		type="ordered" emptyMessage="Nenhuma pergunta disponível">
+	        		#{pergunta.pergunta}
+	 
+	        		<p:inputTextarea class="input_text_area height_text_area spacing" 
+	        			rendered="#{renderizadorBean.verificarTipoPergunta(pergunta)}"
+	        			value="#{renderizadorBean.repostas[pergunta.id]}" 
+						rows="7" cols="30"  maxlength="500" 
+						autoResize="false" />
+	
+					<p:selectOneMenu class="spacing" rendered="#{renderizadorBean.verificaTipoPerguntaOpcoes(pergunta)}" 
+						value="#{renderizadorBean.repostas[pergunta.id]}">
+					            
+			            <f:selectItem itemLabel="Selecione um opcao" itemValue="" />
+			            
+			            <f:selectItems value="#{renderizadorBean.opcoes[pergunta.id]}" 
+			            	var="opcao" 
+			            	itemLabel="#{opcao.descricao}" 
+			            	itemValue="#{opcao.descricao}">
+			            </f:selectItems>			
+					            
+					</p:selectOneMenu>
+	
+				</p:dataList>
+				
+				<p:commandButton class="btn-primary" value="Enviar" 
+					actionListener="#{renderizadorBean.validarResultados}" update="@all"/>
+			
+			</h:form>
+			
+		</p:panel>
+		
+		<p:panel rendered="#{renderizadorBean.renderizarTela4}">
+		
+			<h1>Respostas</h1>
+			
+			<hr/>
+			
+			<h:form class="box_form">
+	
+				<p:dataList class="list_box" value="#{renderizadorBean.resultadosRespostas}" var="resposta"
+					type="ordered" emptyMessage="Nenhum resposta disponível">		 		
+				    #{resposta}	
+				</p:dataList>
+				
+				<p:commandButton class="btn-primary" value="Ok" 
+					actionListener="#{renderizadorBean.buscarListaPerguntas}" update="@all"/>
+			
+			</h:form>
+			
+		</p:panel>
+
+	</h:body>
+</html>

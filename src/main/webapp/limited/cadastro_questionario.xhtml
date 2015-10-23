@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+	<ui:composition template="/limited/template/menu.xhtml">
+		
+		<ui:define name="conteudo">
+			
+			<h1>Cadastro de questionário</h1>
+			
+			<hr/>
+			
+			<div class="form">
+				
+				<p:messages id="messages" showDetail="false" autoUpdate="false" closable="true" />
+		
+				<h:form>
+				
+					<h:inputHidden value="#{questionarioBean.questionario.id}"/>
+
+					<p:panelGrid columns="1" layout="grid">
+						
+						<h5>Dados questionário</h5>
+						
+						<hr/>
+						
+						<p:outputLabel value="Nome" for="nome"/>
+						<p:inputText class="input_text" id="nome"
+							value="#{questionarioBean.questionario.nome}" required="true"
+							requiredMessage="Informe o nome" 
+							maxlength="90">
+						</p:inputText>
+
+					</p:panelGrid>
+					
+					<div class="button_modal">
+				        <p:commandButton class="btn-primary" value="Salvar" 
+				        	action="#{questionarioBean.atualizarOuSalvar}" ajax="false" />
+				    </div>	
+				
+				</h:form>
+			
+			</div>
+		
+		</ui:define>
+		
+	</ui:composition>
+</html>
